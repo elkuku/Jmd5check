@@ -10,9 +10,9 @@ namespace Application;
 
 use Application\Command\Command;
 use Application\Command\CommandOption;
-
 use Application\Service\ApplicationProvider;
 use Application\Service\ConfigurationProvider;
+
 use Joomla\Application\AbstractCliApplication;
 use Joomla\Application\Cli\ColorStyle;
 use Joomla\Application\Cli\Output\Processor\ColorProcessor;
@@ -22,43 +22,9 @@ use Joomla\DI\ContainerAwareTrait;
 use Joomla\Input\Cli;
 use Joomla\Registry\Registry;
 
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-
 class Application extends AbstractCliApplication
 {
 	use ContainerAwareTrait;
-
-	public function printDir($dir)
-	{
-		$dir = realpath($dir);
-
-		if (!$dir)
-		{
-			throw new \DomainException('Invalid directory supplied');
-		}
-
-		$directory = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
-// Filter out ".Trash*" folders
-		//$filter = new DirnameFilter($directory, '/^(?!\.idea|vendor|test)/');
-		//$filter = new DirnameFilter($directory, '/^(?!\vendor)/');
-// Filter PHP/HTML files
-		//$filter = new FilenameFilter($filter, '/\.(?:php|html)$/');
-
-		echo 'Files in ' . $dir . PHP_EOL;
-		foreach(new \RecursiveIteratorIterator($directory) as $file) {
-			$subPath = str_replace($dir . '/', '', $file);
-			echo $subPath . PHP_EOL;
-		}
-
-
-		$adapter = new Local($dir);
-		$fileSystem = new Filesystem($adapter);
-		$contents = $fileSystem->listContents('', true);
-
-		//print_r($contents);
-	}
-
 
 	/**
 	 * Class constructor.
@@ -81,13 +47,6 @@ class Application extends AbstractCliApplication
 			->registerServiceProvider(new ApplicationProvider($this))
 			->registerServiceProvider(new ConfigurationProvider($this->config))
 			;
-			//->registerServiceProvider(new DatabaseProvider)
-			//->registerServiceProvider(new GitHubProvider)
-			//->registerServiceProvider(new DebuggerProvider)
-			//->registerServiceProvider(new LoggerProvider($this->input->get('log'), $this->input->get('quiet', $this->input->get('q'))))
-			//->registerServiceProvider(new TransifexProvider);
-
-//		$this->loadLanguage();
 
 		$this->commandOptions[] = new CommandOption(
 			'quiet', 'q',
@@ -131,11 +90,7 @@ class Application extends AbstractCliApplication
 		{
 			$this->usePBar = false;
 		}
-
-		// Register the global dispatcher
-		//$this->setDispatcher(new Dispatcher);
 	}
-
 
 	/**
 	 * Method to run the application routines.  Most likely you will want to instantiate a controller
@@ -280,7 +235,4 @@ class Application extends AbstractCliApplication
 	{
 		return $this->commandOptions;
 	}
-
-
-
 }

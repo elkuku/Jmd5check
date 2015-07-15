@@ -7,13 +7,7 @@
  * Time: 11:46
  */
 
-use Filesystem\Downloader;
 use Application\Application;
-
-use League\Flysystem\Adapter\AbstractAdapter;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Adapter\NullAdapter;
-use League\Flysystem\Filesystem;
 
 'cli' == PHP_SAPI
 || die("\nThis script must be run from the command line interface.\n\n");
@@ -71,44 +65,3 @@ catch (\Exception $e)
 
 	exit($e->getCode() ? : 255);
 }
-
-exit;
-
-
-
-
-exit;
-$checker = new Application;
-
-$releases = $checker->getJoomlaCmsReleases();
-
-$outDir = __DIR__ . '/testhashes';
-
-$fileSystem = new Filesystem(new NullAdapter($outDir));
-
-$downloader = new Downloader($fileSystem);
-
-foreach ($releases as $relNo => $url)
-{
-	if (file_exists($outDir . '/' . basename($url)))
-	{
-		continue;
-	}
-exit;
-	$downloader->download($url, $outDir);
-
-
-////	$fname = basename($url);
-	//$fileSystem->copy($url, $outDir . '/' . $fname);
-}
-
-
-exit;
-$dir = __DIR__ . '/test';
-$checker->printDir($dir);
-
-$hashes = $checker->getHashes($dir);
-
-print_r($hashes);
-
-$checker->makeHashFile($dir, __DIR__ . '/testhashes/test.txt');
