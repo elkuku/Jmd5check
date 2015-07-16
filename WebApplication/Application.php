@@ -73,7 +73,7 @@ class Application extends AbstractWebApplication
 
 			$version = preg_replace('/_hashes.txt/', '', $file);
 
-			$body[] = '<li><a href="index.php?getVersion=' . $version . '">' . $version . '</a></li>';
+			$body[] = '<li><a href="?getVersion=' . $version . '">' . $version . '</a></li>';
 		}
 
 		$body[] = '</ul>';
