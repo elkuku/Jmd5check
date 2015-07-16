@@ -52,14 +52,6 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 	protected $usePBar;
 
 	/**
-	 * The project object.
-	 *
-	 * @var    TrackerProject
-	 * @since  1.0
-	 */
-	protected $project;
-
-	/**
 	 * Execute the command.
 	 *
 	 * @return  void
@@ -83,13 +75,13 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 	/**
 	 * Add a command option.
 	 *
-	 * @param   TrackerCommandOption  $option  The command option.
+	 * @param   CommandOption  $option  The command option.
 	 *
 	 * @return  $this
 	 *
 	 * @since   1.0
 	 */
-	protected function addOption(TrackerCommandOption $option)
+	protected function addOption(CommandOption $option)
 	{
 		$this->options[] = $option;
 
@@ -110,22 +102,6 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 	protected function out($text = '', $nl = true)
 	{
 		$this->getApplication()->out($text, $nl);
-
-		return $this;
-	}
-
-	/**
-	 * Write a string to standard output in "verbose" mode.
-	 *
-	 * @param   string  $text  The text to display.
-	 *
-	 * @return  $this
-	 *
-	 * @since   1.0
-	 */
-	protected function debugOut($text)
-	{
-		$this->getApplication()->debugOut($text);
 
 		return $this;
 	}
@@ -172,10 +148,10 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 	{
 		$command = strtolower(join('', array_slice(explode('\\', get_class($this)), -1)));
 
-		$this->getApplication()->outputTitle(sprintf(g11n3t('Command: %s'), ucfirst($command)));
+		$this->getApplication()->out(sprintf('Command: %s', ucfirst($command)));
 
-		$errorTitle1 = g11n3t(sprintf('Missing option for command: %s', $command));
-		$errorTitle2 = g11n3t('Please use one of the following :');
+		$errorTitle1 = sprintf('Missing option for command: %s', $command);
+		$errorTitle2 = ('Please use one of the following :');
 
 		$maxLen = (strlen($errorTitle1) > strlen($errorTitle2)) ? strlen($errorTitle1) : strlen($errorTitle2);
 
@@ -210,7 +186,7 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 	/**
 	 * Get the application object.
 	 *
-	 * @return  \Application\Application
+	 * @return  \CLIApplication\Application
 	 *
 	 * @since   1.0
 	 */
@@ -232,20 +208,6 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 	}
 
 	/**
-	 * Display the GitHub rate limit.
-	 *
-	 * @return  $this
-	 *
-	 * @since   1.0
-	 */
-	protected function displayGitHubRateLimit()
-	{
-		$this->getApplication()->displayGitHubRateLimit();
-
-		return $this;
-	}
-
-	/**
 	 * Get a progress bar object.
 	 *
 	 * @param   integer  $targetNum  The target number.
@@ -257,95 +219,6 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 	protected function getProgressBar($targetNum)
 	{
 		return $this->getApplication()->getProgressBar($targetNum);
-	}
-
-	/**
-	 * Select the project.
-	 *
-	 * @return  $this
-	 *
-	 * @since   1.0
-	 * @throws  \RuntimeException
-	 * @throws  AbortException
-	 */
-	protected function selectProject()
-	{
-		/* @type \Joomla\Database\DatabaseDriver $db */
-		$db = $this->getContainer()->get('db');
-
-		$projects = $db->setQuery(
-			$db->getQuery(true)
-				->from($db->quoteName('#__tracker_projects'))
-				->select(array('project_id', 'title', 'gh_user', 'gh_project'))
-
-		)->loadObjectList();
-/*
-		$projectsModel = new ProjectsModel($this->getContainer()->get('db'), $this->getApplication()->input);
-		$user = new GitHubUser($this->getApplication()->getp);
-		$projects = with()->getItems();
-*/
-		$id = $this->getApplication()->input->getInt('project', $this->getApplication()->input->getInt('p'));
-
-		if (!$id)
-		{
-			$this->out()
-				->out('<b>' . g11n3t('Available projects:') . '</b>')
-				->out();
-
-			$cnt = 1;
-
-			$checks = array();
-
-			foreach ($projects as $project)
-			{
-				if ($project->gh_user && $project->gh_project)
-				{
-					$this->out('  <b>' . $cnt . '</b> (id: ' . $project->project_id . ') ' . $project->title);
-					$checks[$cnt] = $project;
-					$cnt++;
-				}
-			}
-
-			$this->out()
-				->out('<question>' . g11n3t('Select a project:') . '</question> ', false);
-
-			$resp = (int) trim($this->getApplication()->in());
-
-			if (!$resp)
-			{
-				throw new AbortException(g11n3t('Aborted'));
-			}
-
-			if (false == array_key_exists($resp, $checks))
-			{
-				throw new AbortException(g11n3t('Invalid project'));
-			}
-
-			$this->project = $checks[$resp];
-		}
-		else
-		{
-			foreach ($projects as $project)
-			{
-				if ($project->project_id == $id)
-				{
-					$this->project = $project;
-
-					break;
-				}
-			}
-
-			if (is_null($this->project))
-			{
-				throw new AbortException(g11n3t('Invalid project'));
-			}
-		}
-
-		$this->logOut(sprintf(g11n3t('Processing project: %s'), '<info>' . $this->project->title . '</info>'));
-
-		$this->getApplication()->input->set('project', $this->project->project_id);
-
-		return $this;
 	}
 
 	/**
