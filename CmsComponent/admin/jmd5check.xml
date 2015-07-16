@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.1" method="upgrade">
+	<name>com_jmd5check</name>
+	<author>Nikolai Plath</author>
+	<creationDate>2015</creationDate>
+	<copyright>(C)</copyright>
+	<license>GPL</license>
+	<authorEmail>admin@example.org</authorEmail>
+	<authorUrl>www.github.com/elkuku</authorUrl>
+	<version>0.1</version>
+	<description>Joomla! CMS md5 Checker</description>
+	<files folder="site">
+		<filename>jmd5check.php</filename>
+	</files>
+
+	<administration>
+		<menu>com_jmd5check</menu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>jmd5check.php</filename>
+		</files>
+	</administration>
+</extension>
+
