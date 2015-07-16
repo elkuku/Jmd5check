@@ -35,6 +35,8 @@ class Update extends Command
 
 	private $outPath = '';
 
+	private $deleteFiles = false;
+
 	/**
 	 * Execute the command.
 	 *
@@ -44,12 +46,17 @@ class Update extends Command
 	 */
 	public function execute()
 	{
-		$this->outPath = $this->getApplication()->input->getPath('o');
+		$input = $this->getApplication()->input;
 
-		if (!$this->outPath)
+		$this->deleteFiles = $input->get('delete') ? true : false;
+		$this->outPath = JPATH_ROOT . '/build';
+
+		if (!is_dir($this->outPath))
 		{
-			throw new \UnexpectedValueException('Please specify an output directory using the -o option');
+			throw new \UnexpectedValueException('The output directory does not exist!');
 		}
+
+		$this->checkDirs(['hashes', 'sources', 'zips']);
 
 		$this->out('OutDir set to: ' . $this->outPath)
 			->out('Fetching Joomla! releases from GitHub ... ', false)
@@ -57,6 +64,19 @@ class Update extends Command
 			->out(sprintf('found <b>%d</b> releases.', count($this->releases)))
 			->out('Processing releases')
 			->processReleases();
+	}
+
+	private function checkDirs(array $directories)
+	{
+		$filesystem = new Filesystem(new Local($this->outPath));
+
+		foreach ($directories as $directory)
+		{
+			if (false == $filesystem->has($directory))
+			{
+				$filesystem->createDir($directory);
+			}
+		}
 	}
 
 	public function getReleases()
@@ -137,7 +157,7 @@ class Update extends Command
 		{
 			$this->out('Processing ' . $relNo . ' ... ', false);
 
-			if (file_exists($downloadDir . '/' . basename($url)))
+			if (file_exists($this->outPath . '/hashes/' . $relNo . '_hashes.txt'))
 			{
 				$this->out('already downloaded.');
 
@@ -154,8 +174,26 @@ class Update extends Command
 				->unpackRelease($downloadDir . '/' . basename($url), $extractDir)
 				->out('create hash file ... ', false)
 				->makeHashFile($extractDir, $this->outPath . '/hashes/' . $relNo . '_hashes.txt')
+				->cleanup()
 				->out('ok');
 		}
+
+		return $this;
+	}
+
+	private function cleanup()
+	{
+		if (false == $this->deleteFiles)
+		{
+			return $this;
+		}
+
+		$filesystem = new Filesystem(new Local($this->outPath));
+
+		$filesystem->deleteDir('zips');
+		$filesystem->createDir('zips');
+		$filesystem->deleteDir('sources');
+		$filesystem->createDir('sources');
 
 		return $this;
 	}
