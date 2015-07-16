@@ -17,5 +17,12 @@
 
     "league/flysystem": "0.4.*",
     "monolog/monolog": "1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "WebApplication\\": "WebApplication/",
+      "CLIApplication\\": "CLIApplication/",
+      "Filesystem\\": "Filesystem/"
+    }
   }
 }
