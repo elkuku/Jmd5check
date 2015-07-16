@@ -6,12 +6,13 @@
  * Time: 12:15
  */
 
-namespace Application;
+namespace CLIApplication;
 
-use Application\Command\Command;
-use Application\Command\CommandOption;
-use Application\Service\ApplicationProvider;
-use Application\Service\ConfigurationProvider;
+use CLIApplication\Command\Command;
+use CLIApplication\Command\CommandOption;
+use CLIApplication\Command\Help\Help;
+use CLIApplication\Service\ApplicationProvider;
+use CLIApplication\Service\ConfigurationProvider;
 
 use Joomla\Application\AbstractCliApplication;
 use Joomla\Application\Cli\ColorStyle;
@@ -135,7 +136,7 @@ class Application extends AbstractCliApplication
 			$action = (isset($args[1])) ? $args[1] : $command;
 		}
 
-		$className = 'Application\\Command\\' . ucfirst($command) . '\\' . ucfirst($action);
+		$className = 'CLIApplication\\Command\\' . ucfirst($command) . '\\' . ucfirst($action);
 
 		if (false == class_exists($className))
 		{

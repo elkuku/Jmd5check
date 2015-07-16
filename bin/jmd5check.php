@@ -7,7 +7,7 @@
  * Time: 11:46
  */
 
-use Application\Application;
+use CLIApplication\Application;
 
 'cli' == PHP_SAPI
 || die("\nThis script must be run from the command line interface.\n\n");
@@ -16,8 +16,8 @@ use Application\Application;
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-define('JPATH_ROOT', __DIR__);
-
+define('JPATH_ROOT', realpath(__DIR__ . '/..'));
+echo JPATH_ROOT;
 
 // Load the autoloader
 $path = realpath(JPATH_ROOT . '/vendor/autoload.php');
@@ -30,12 +30,7 @@ if (!$path)
 	exit(1);
 }
 
-$loader = include $path;
-
-// Add the namespace for our application to the autoloader.
-/* @type Composer\Autoload\ClassLoader $loader */
-$loader->add('Application', __DIR__);
-$loader->add('Filesystem', __DIR__);
+include $path;
 
 try
 {

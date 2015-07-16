@@ -6,11 +6,11 @@
  * @license    http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License Version 2 or Later
  */
 
-namespace Application\Command\Help;
+namespace CLIApplication\Command\Help;
 
-use Application\Command\Command;
+use CLIApplication\Command\Command;
+use CLIApplication\Command\CommandOption;
 
-use Application\Command\CommandOption;
 use Joomla\Application\Cli\Output\Processor\ColorProcessor;
 use Joomla\Application\Cli\ColorStyle;
 
@@ -209,7 +209,7 @@ class Help extends Command
 
 			$c = $fileInfo->getFilename();
 
-			$className = "Application\\Command\\$c\\$c";
+			$className = "CLIApplication\\Command\\$c\\$c";
 
 			if (false == class_exists($className))
 			{

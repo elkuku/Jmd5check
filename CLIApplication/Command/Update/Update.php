@@ -6,9 +6,9 @@
  * @license    http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License Version 2 or Later
  */
 
-namespace Application\Command\Update;
+namespace CLIApplication\Command\Update;
 
-use Application\Command\Command;
+use CLIApplication\Command\Command;
 
 use Filesystem\Downloader;
 use Joomla\Github\Github;
