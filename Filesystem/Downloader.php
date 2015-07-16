@@ -13,19 +13,6 @@ use League\Flysystem\Filesystem;
 class Downloader
 {
 	/**
-	 * @var Filesystem
-	 */
-	protected $filesystem;
-
-	/**
-	 * @param Filesystem           $filesystem
-	 */
-	public function __construct()//Filesystem $filesystem)
-	{
-		//$this->filesystem = $filesystem;
-	}
-
-	/**
 	 * Downloads a request
 	 *
 	 * @param string $url
