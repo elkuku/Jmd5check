@@ -1,8 +1,6 @@
 <?php
 namespace Filesystem;
 
-use League\Flysystem\Filesystem;
-
 /**
  * Created by PhpStorm.
  * User: elkuku

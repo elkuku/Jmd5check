@@ -151,7 +151,7 @@ class Update extends Command
 	{
 		$downloadDir = $this->outPath . '/zips';
 
-		$downloader = new Downloader(new Filesystem(new NullAdapter($downloadDir)));
+		$downloader = new Downloader;
 
 		foreach ($this->releases as $relNo => $url)
 		{
@@ -200,7 +200,7 @@ class Update extends Command
 
 	private function unpackRelease($file, $destPath)
 	{
-		// It's a tag.gz
+		// It's a tar.gz
 		$pharData = new \PharData($file);
 		//$pharData->decompress();
 
