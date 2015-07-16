@@ -44,10 +44,6 @@ class Application extends AbstractWebApplication
 			$body[] = 'Invalid version supplied....';
 		}
 
-		$body[] = '<!-- Sry no time for HTML - Browsers should be fine with this or... SCREW \'EM -->';
-
-		$body[] = '<h1>Joomla! CMS Hashes</h1>';
-
 		$files = scandir($hashesPath);
 
 		$body[] = '<ul>';
@@ -66,6 +62,8 @@ class Application extends AbstractWebApplication
 
 		$body[] = '</ul>';
 
-		$this->setBody(implode("\n", $body));
+		$template = file_get_contents(JPATH_ROOT . '/www/template.html');
+
+		$this->setBody(str_replace('####CONTENT####', implode("\n", $body), $template));
 	}
 }
