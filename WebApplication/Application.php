@@ -36,17 +36,33 @@ class Application extends AbstractWebApplication
 
 			if (file_exists($fileName))
 			{
-				echo(file_get_contents($fileName));
+				header('Content-Description: File Transfer');
+				header('Content-Type: application/octet-stream');
+				header('Content-Disposition: attachment; filename=' . basename($fileName));
+				header('Expires: 0');
+				header('Cache-Control: must-revalidate');
+				header('Pragma: public');
+				header('Content-Length: ' . filesize($fileName));
+
+				readfile($fileName);
 
 				exit;
 			}
 
-			$body[] = 'Invalid version supplied....';
+			$body[] = '<div class="alert alert-warning">Invalid version supplied....</div>';
 		}
 
-		$files = scandir($hashesPath);
+		if (is_dir($hashesPath))
+		{
+			$files = scandir($hashesPath);
+		}
+		else
+		{
+			$files = [];
+			$body[] = '<div class="alert alert-danger"><strong>No hashes found.</strong> Please run update!</div>';
+		}
 
-		$body[] = '<ul>';
+		$body[] = '<ul class="list-unstyled">';
 
 		foreach ($files as $file)
 		{
@@ -63,7 +79,8 @@ class Application extends AbstractWebApplication
 		$body[] = '</ul>';
 
 		$template = file_get_contents(JPATH_ROOT . '/www/template.html');
+		$template = str_replace('####CONTENT####', implode("\n", $body), $template);
 
-		$this->setBody(str_replace('####CONTENT####', implode("\n", $body), $template));
+		$this->setBody($template);
 	}
 }
