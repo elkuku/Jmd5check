@@ -87,6 +87,18 @@ class Jmd5checkController extends JControllerLegacy
 			'/components/com_jmd5check/'
 		];
 
+		JLoader::registerNamespace('Elkuku', JPATH_LIBRARIES . '/elkuku');
+
+		$md5Checker = new \Elkuku\Md5Check\Md5Check;
+
+		$excludeFolders = [
+			'installation'
+		];
+
+		$result = $md5Checker->checkMD5File($fileName, JPATH_ROOT, $excludeFolders);
+
+		var_dump($result);
+return;
 		foreach ($files as $file)
 		{
 			foreach ($skipFolders as $skipFolder)
