@@ -76,15 +76,13 @@ class Md5Check
 	 * @param   string  $path            Path to md5 file
 	 * @param   array   $extensionPaths  Indexed array: First folder in md5 file path as key - extension path as value
 	 *
-	 * @return array Array of errors
+	 * @return Md5CheckResult
 	 */
-	public function checkMD5File($path, $extensionPaths)
+	public function checkMD5File($md5Path, $baseDir, array $excludeFolders = [], array $excludeFiles = [])
 	{
-		$lines = file($path);
+		$lines = file($md5Path);
 
-		$errors = array();
-
-		$errors[0] = 0;
+		$checkResult = new Md5CheckResult;
 
 		foreach ($lines as $line)
 		{
@@ -94,6 +92,8 @@ class Md5Check
 			}
 
 			list($md5, $subPath) = explode(' ', $line);
+
+			$subPath = trim($subPath);
 
 			$pos = strpos($subPath, '@');
 
@@ -107,39 +107,34 @@ class Md5Check
 				$path = $this->decompress($compressed) . '/' . $file;
 			}
 
-			$parts = explode(DS, $path);
-
-			if ( ! array_key_exists($parts[0], $extensionPaths))
+			foreach ($excludeFolders as $excludeFolder)
 			{
-				continue;
+				if (0 === strpos($path, $excludeFolder))
+				{
+					continue 2;
+				}
 			}
 
-			$path = $extensionPaths[$parts[0]] . DS . substr($path, strlen($parts[0]) + 1);
+			$fullPath = $baseDir . '/' . $path;
 
-			echo JDEBUG ? $path . '...' : '';
+			$checkResult->filesChecked ++;
 
-			$errors[0] ++;
-
-			if ( ! file_exists($path))
+			if ( ! file_exists($fullPath))
 			{
-				$errors[] = sprintf('File not found: %s', $path);
-				echo JDEBUG ? 'not found<br />' : '';
-
-				continue;
-			}
-
-			if (md5_file($path) != $md5)
-			{
-				$errors[] = sprintf('MD5 check failed on file: %s', $path);
-				echo JDEBUG ? 'md5 check failed<br />' : '';
+				$checkResult->addMissingFile($path);
 
 				continue;
 			}
 
-			echo JDEBUG ? 'OK<br />' : '';
+			if (md5_file($fullPath) != $md5)
+			{
+				$checkResult->addCheckError($path);
+
+				continue;
+			}
 		}
 
-		return $errors;
+		return $checkResult;
 	}
 
 	/**
@@ -161,7 +156,7 @@ class Md5Check
 			return $previous;
 		}
 
-		// Same as previous path - maximun compression :)
+		// Same as previous path - maximum compression :)
 		$compressed = '=';
 
 		if ($previous != $path)
@@ -240,7 +235,7 @@ class Md5Check
 			return $previous;
 		}
 
-		// Same as previous path - maximun compression :)
+		// Same as previous path - maximum compression :)
 		$decompressed = $previous;
 
 		if ($path != '=')
