@@ -53,7 +53,7 @@ class Update extends Command
 		$this->deleteFiles = $input->get('delete') ? true : false;
 		$this->outPath = JPATH_ROOT . '/build';
 
-		if (!is_dir($this->outPath))
+		if(!is_dir($this->outPath))
 		{
 			throw new \UnexpectedValueException('The output directory does not exist!');
 		}
