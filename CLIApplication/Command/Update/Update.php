@@ -37,7 +37,7 @@ class Update extends Command
 
 	private $outPath = '';
 
-	private $deleteFiles = false;
+	private $keepFiles = false;
 
 	/**
 	 * Execute the command.
@@ -50,7 +50,7 @@ class Update extends Command
 	{
 		$input = $this->getApplication()->input;
 
-		$this->deleteFiles = $input->get('delete') ? true : false;
+		$this->keepFiles = $input->get('keep') ? true : false;
 		$this->outPath = JPATH_ROOT . '/build';
 
 		if (!is_dir($this->outPath))
@@ -183,8 +183,9 @@ class Update extends Command
 
 	private function cleanup()
 	{
-		if (false == $this->deleteFiles)
+		if ($this->keepFiles)
 		{
+			// Don't cleanup
 			return $this;
 		}
 
@@ -202,29 +203,8 @@ class Update extends Command
 	{
 		// It's a tar.gz
 		$pharData = new \PharData($file);
-		//$pharData->decompress();
 
-		//$pharData = new PharData(pathinfo($outDir . '/' . $fName, PATHINFO_FILENAME));
 		$pharData->extractTo($destPath);
-
-		// It's a ZIP :(
-		if (false)
-		{
-			$zip = new \ZipArchive;
-
-			$outDir = __DIR__ . '/testhashes';
-
-			exit;
-			if ($zip->open($outDir . '/' . $fName) === TRUE) {
-				$zip->extractTo($outDir . '/test/');
-				$zip->close();
-				echo 'ok';
-			} else {
-				echo 'failed';
-			}
-
-
-		}
 
 		return $this;
 	}
