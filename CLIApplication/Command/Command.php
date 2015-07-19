@@ -208,20 +208,6 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 	}
 
 	/**
-	 * Get a progress bar object.
-	 *
-	 * @param   integer  $targetNum  The target number.
-	 *
-	 * @return  \Elkuku\Console\Helper\ConsoleProgressBar
-	 *
-	 * @since   1.0
-	 */
-	protected function getProgressBar($targetNum)
-	{
-		return $this->getApplication()->getProgressBar($targetNum);
-	}
-
-	/**
 	 * Execute a command on the server.
 	 *
 	 * @param   string  $command  The command to execute.
@@ -245,9 +231,9 @@ abstract class Command implements LoggerAwareInterface, ContainerAwareInterface
 				throw new \RuntimeException($lastLine);
 			}
 
-			$this->logOut(g11n3t('An unknown error occurred'));
+			$this->logOut('An unknown error occurred');
 
-			throw new \RuntimeException(g11n3t('An unknown error occurred'));
+			throw new \RuntimeException('An unknown error occurred');
 		}
 
 		return $lastLine;

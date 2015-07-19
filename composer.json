@@ -22,7 +22,7 @@
     "psr-4": {
       "WebApplication\\": "WebApplication/",
       "CLIApplication\\": "CLIApplication/",
-      "Filesystem\\": "Filesystem/"
+      "Elkuku\\": "lib/Elkuku/"
     }
   }
 }

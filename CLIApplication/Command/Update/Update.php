@@ -10,10 +10,12 @@ namespace CLIApplication\Command\Update;
 
 use CLIApplication\Command\Command;
 
-use Filesystem\Downloader;
+use Elkuku\Filesystem\Downloader;
+use Elkuku\Md5Check\Md5Check;
+
 use Joomla\Github\Github;
+
 use League\Flysystem\Adapter\Local;
-use League\Flysystem\Adapter\NullAdapter;
 use League\Flysystem\Filesystem;
 
 /**
@@ -122,10 +124,7 @@ class Update extends Command
 
 				foreach ($release->assets as $asset)
 				{
-					if (
-						strpos($asset->name, 'Full')
-						&& $asset->content_type == 'application/zip'
-					)
+					if (strpos($asset->name, 'Full') && $asset->content_type == 'application/zip')
 					{
 						$relUri = $asset->browser_download_url;
 
@@ -174,6 +173,7 @@ class Update extends Command
 				->unpackRelease($downloadDir . '/' . basename($url), $extractDir)
 				->out('create hash file ... ', false)
 				->makeHashFile($extractDir, $this->outPath . '/hashes/' . $relNo . '_hashes.txt')
+				->out('cleanup ...', false)
 				->cleanup()
 				->out('ok');
 		}
@@ -229,36 +229,9 @@ class Update extends Command
 		return $this;
 	}
 
-	public function getHashes($dir)
-	{
-		$contents = (new Filesystem(new Local($dir)))
-			->listContents('', true);
-
-		$hashes = [];
-
-		foreach ($contents as $content)
-		{
-			if ('file' == $content['type'])
-			{
-				$hashes[$content['path']] = md5_file($dir . '/' . $content['path']);
-			}
-		}
-
-		return $hashes;
-	}
-
 	public function makeHashFile($dir, $filePath)
 	{
-		$hashes = $this->getHashes($dir);
-
-		$lines = [];
-
-		foreach ($hashes as $path => $hash)
-		{
-			$lines[] = $hash . ' ' . $path;
-		}
-
-		$fileContents = implode("\n", $lines);
+		$fileContents = (new Md5Check)->createMD5string($dir);
 
 		(new Filesystem(new Local(dirname($filePath))))
 			->write(basename($filePath), $fileContents);

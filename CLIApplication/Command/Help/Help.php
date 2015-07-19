@@ -250,7 +250,7 @@ class Help extends Command
 
 			if ($action != $cName)
 			{
-				$className = "Application\\Command\\$cName\\$action";
+				$className = "CLIApplication\\Command\\$cName\\$action";
 
 				$actions[strtolower($action)] = new $className($this->getContainer());
 			}

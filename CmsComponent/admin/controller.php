@@ -39,13 +39,13 @@ class Jmd5checkController extends JControllerLegacy
 		// IMPORTANT !!!
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
-		//curl_setopt($ch, CURLOPT_SSLVERSION,3);
-		//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
+		// TEST curl_setopt($ch, CURLOPT_SSLVERSION,3);
+		// TEST curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
 
-		$data = curl_exec ($ch);
+		$data = curl_exec($ch);
 		$error = curl_error($ch);
 
-		curl_close ($ch);
+		curl_close($ch);
 
 		if ($error)
 		{
@@ -141,7 +141,8 @@ class Jmd5checkController extends JControllerLegacy
 
 		$view->setLayout('result');
 
-		parent::display();}
+		parent::display();
+	}
 
 	private function getHashes($fileName)
 	{

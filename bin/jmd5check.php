@@ -17,7 +17,6 @@ error_reporting(-1);
 ini_set('display_errors', 1);
 
 define('JPATH_ROOT', realpath(__DIR__ . '/..'));
-echo JPATH_ROOT;
 
 // Load the autoloader
 $path = realpath(JPATH_ROOT . '/vendor/autoload.php');

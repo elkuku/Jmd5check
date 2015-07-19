@@ -9,8 +9,6 @@
 namespace WebApplication;
 
 use Joomla\Application\AbstractWebApplication;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
 
 class Application extends AbstractWebApplication
 {
